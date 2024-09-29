@@ -1,12 +1,12 @@
+// server.js
 import express from 'express';
-import startServer from './libs/boot'; // Keep consistent ES6 imports
-import injectRoutes from './routes';
-import injectMiddlewares from './libs/middlewares';
+import injectRoutes from './routes/index.js'; // Ensure you use .js if your module is in ESM format
 
-const server = express();
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-injectMiddlewares(server);  // Inject middlewares (e.g., body parsers, logging)
-injectRoutes(server);       // Inject application routes
-startServer(server);        // Start the server
+injectRoutes(app); // Load routes
 
-export default server;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
