@@ -12,15 +12,19 @@ import { APIError, errorResponse } from '../middlewares/error';
  * @param {Express} api
  */
 const injectRoutes = (api) => {
+  // Application status routes
   api.get('/status', AppController.getStatus);
   api.get('/stats', AppController.getStats);
 
+  // Authentication routes
   api.get('/connect', basicAuthenticate, AuthController.getConnect);
   api.get('/disconnect', xTokenAuthenticate, AuthController.getDisconnect);
 
+  // User-related routes
   api.post('/users', UsersController.postNew);
   api.get('/users/me', xTokenAuthenticate, UsersController.getMe);
 
+  // File-related routes
   api.post('/files', xTokenAuthenticate, FilesController.postUpload);
   api.get('/files/:id', xTokenAuthenticate, FilesController.getShow);
   api.get('/files', xTokenAuthenticate, FilesController.getIndex);
@@ -28,9 +32,12 @@ const injectRoutes = (api) => {
   api.put('/files/:id/unpublish', xTokenAuthenticate, FilesController.putUnpublish);
   api.get('/files/:id/data', FilesController.getFile);
 
+  // Handle undefined routes (404)
   api.all('*', (req, res, next) => {
     errorResponse(new APIError(404, `Cannot ${req.method} ${req.url}`), req, res, next);
   });
+
+  // Global error handling middleware
   api.use(errorResponse);
 };
 
